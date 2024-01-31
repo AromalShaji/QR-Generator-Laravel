@@ -58,12 +58,12 @@
             transform: translateX(-50%); /* Center the button horizontally */
         }
     </style>
-    
+     
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     
     <div class="table-container">
         <div id="container">
-            <form id="qrForm" action="{{ route('generateQrCode') }}" method="POST">
+            <form id="qrForm" action="{{ route('generateQrCodeDetails') }}" method="POST">
                 @csrf
                 <div class="button-container">
                     <label id="prnLabel" for="prnField">PRN:</label>
@@ -77,6 +77,9 @@
                     <br>
                     <label for="collegeName">College Name:</label>
                     <input type="text" id="collegeName" class="editable">
+                    <br>
+                    <label for="courseId">Course Name:</label>
+                    <input type="text" id="courseId" class="editable">
                     <br>
                     <label for="falseNumber">False Number:</label>
                     <input type="text" id="falseNumber" class="editable">
@@ -98,6 +101,7 @@
             var studentName = document.getElementById("studentName");
             var collegeName = document.getElementById("collegeName");
             var falseNumber = document.getElementById("falseNumber");
+            var courseId = document.getElementById("courseId");
     
             if (prnField.value.trim() === '') {
                 alert('Please fill in PRN field.');
@@ -119,7 +123,7 @@
     
             // Use AJAX to fetch data from the controller
             $.ajax({
-                url: '{{ route("generateQrCode") }}',
+                url: '{{ route("generateQrCodeDetails") }}',
                 type: 'POST',
                 data: { prn: prnField.value, _token: '{{ csrf_token() }}' },
                 success: function (data) {
@@ -131,6 +135,7 @@
                         studentName.value = data[0].student_name;
                         collegeName.value = data[0].college_name;
                         falseNumber.value = data[0].false_number;
+                        courseId.value = data[0].course_id;
     
                         // Show additional fields and QR code button
                         document.getElementById("additionalFields").style.display = 'block';
@@ -155,27 +160,34 @@
         }
     
         function generateQRCode() {
-            var falseNumber = document.getElementById("falseNumber").value;
+            var prnValue = document.getElementById("prnField").value;
     
-            if (falseNumber.trim() === '') {
-                alert('Please fill in False Number field.');
-                return;
-            }
+            // Use AJAX to fetch QR code data from the controller
+            $.ajax({
+                url: '{{ route("generateQrCode") }}',
+                type: 'POST',
+                data: { prn: prnValue, _token: '{{ csrf_token() }}' },
+                success: function (data) {
+                    // Clear existing QR code
+                    document.getElementById("qrcodeContainer").innerHTML = '';
     
-            // Clear existing QR code
-            document.getElementById("qrcodeContainer").innerHTML = '';
+                    // Generate QR code using qrcode.js library
+                    var qrcode = new QRCode(document.getElementById("qrcodeContainer"), {
+                        text: data.qrCode,
+                        width: 128,
+                        height: 128,
+                    });
     
-            // Generate QR code using qrcode.js library
-            var qrcode = new QRCode(document.getElementById("qrcodeContainer"), {
-                text: falseNumber,
-                width: 128,
-                height: 128,
+                    // Show QR code container and download button
+                    document.getElementById("qrcodeContainer").style.display = 'block';
+                    document.getElementById("downloadButton").style.display = 'inline-block';
+                    document.getElementById("qrButton").style.display = 'none'; // Hide the QR button after generating QR code
+                },
+                error: function () {
+                    // Show error message
+                    alert('Error generating QR code.');
+                }
             });
-    
-            // Show QR code container and download button
-            document.getElementById("qrcodeContainer").style.display = 'block';
-            document.getElementById("downloadButton").style.display = 'inline-block';
-            document.getElementById("qrButton").style.display = 'none'; // Hide the QR button after generating QR code
         }
     
         function downloadQRCode() {
