@@ -73,16 +73,16 @@
                 <br>
                 <div id="additionalFields" style="display: none;">
                     <label for="studentName">Student Name:</label>
-                    <input type="text" id="studentName" class="editable">
+                    <input type="text" id="studentName" class="editable" readonly>
                     <br>
                     <label for="collegeName">College Name:</label>
-                    <input type="text" id="collegeName" class="editable">
+                    <input type="text" id="collegeName" class="editable" readonly>
                     <br>
                     <label for="courseId">Course Name:</label>
-                    <input type="text" id="courseId" class="editable">
+                    <input type="text" id="courseId" class="editable" readonly>
                     <br>
                     <label for="falseNumber">False Number:</label>
-                    <input type="text" id="falseNumber" class="editable">
+                    <input type="text" id="falseNumber" class="editable" readonly>
                     <br>
                 </div>
     
