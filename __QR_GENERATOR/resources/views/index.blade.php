@@ -58,7 +58,7 @@
             transform: translateX(-50%); /* Center the button horizontally */
         }
     </style>
-     
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     
     <div class="table-container">
@@ -86,8 +86,7 @@
                     <br>
                 </div>
     
-                <button class="btn btn-success me-3" id="qrButton" style="display: none;" onclick="generateQRCode()">Generate QR Code</button>
-                <button class="btn btn-primary me-3" id="downloadButton" style="display: none;" onclick="downloadQRCode()">Generate PDF</button>
+                <button class="btn btn-success me-3" id="downloadButton" style="display: none;" onclick="downloadQRCode()">Generate PDF</button>
             </form>
             <div id="loadingMessage" style="display: none;">Loading...</div>
             <div id="errorMessage" style="display: none; color: red;"></div>
@@ -102,99 +101,58 @@
             var collegeName = document.getElementById("collegeName");
             var falseNumber = document.getElementById("falseNumber");
             var courseId = document.getElementById("courseId");
-    
+
             if (prnField.value.trim() === '') {
                 alert('Please fill in PRN field.');
                 return;
             }
-    
-            // Clear QR code container
             document.getElementById("qrcodeContainer").innerHTML = '';
-    
-            // Clear readonly attribute
             prnField.removeAttribute('readonly');
-    
-            // Hide download button
             document.getElementById("downloadButton").style.display = 'none';
-    
-            // Show loading message
             document.getElementById("loadingMessage").style.display = 'block';
-            document.getElementById("errorMessage").style.display = 'none'; // Hide error message
-    
-            // Use AJAX to fetch data from the controller
+            document.getElementById("errorMessage").style.display = 'none'; 
+
             $.ajax({
                 url: '{{ route("generateQrCodeDetails") }}',
                 type: 'POST',
                 data: { prn: prnField.value, _token: '{{ csrf_token() }}' },
                 success: function (data) {
-                    // Hide loading message
                     document.getElementById("loadingMessage").style.display = 'none';
-    
+
                     if (data.length > 0) {
-                        // Update the fields with the received data
                         studentName.value = data[0].student_name;
                         collegeName.value = data[0].college_name;
                         falseNumber.value = data[0].false_number;
                         courseId.value = data[0].course_id;
-    
-                        // Show additional fields and QR code button
+
                         document.getElementById("additionalFields").style.display = 'block';
-                        document.getElementById("qrButton").style.display = 'inline-block';
-                        document.getElementById("prnField").removeAttribute('readonly');
-                        document.getElementById("submitButton").style.display = 'inline-block'; // Show submit button
+
+                        var qrcode = new QRCode(document.getElementById("qrcodeContainer"), {
+                            text: data[0].false_number,
+                            width: 128,
+                            height: 128,
+                        });
+
+                        document.getElementById("qrcodeContainer").style.display = 'block';
+                        document.getElementById("downloadButton").style.display = 'inline-block';
+                        document.getElementById("submitButton").style.display = 'inline-block'; 
                     } else {
-                        // Show error message
                         document.getElementById("errorMessage").innerText = 'No data found.';
                         document.getElementById("errorMessage").style.display = 'block';
                     }
                 },
                 error: function () {
-                    // Hide loading message
                     document.getElementById("loadingMessage").style.display = 'none';
-    
-                    // Show error message
+
                     document.getElementById("errorMessage").innerText = 'Error fetching data from the server.';
                     document.getElementById("errorMessage").style.display = 'block';
                 }
             });
         }
-    
-        function generateQRCode() {
-            var prnValue = document.getElementById("prnField").value;
-    
-            // Use AJAX to fetch QR code data from the controller
-            $.ajax({
-                url: '{{ route("generateQrCode") }}',
-                type: 'POST',
-                data: { prn: prnValue, _token: '{{ csrf_token() }}' },
-                success: function (data) {
-                    // Clear existing QR code
-                    document.getElementById("qrcodeContainer").innerHTML = '';
-    
-                    // Generate QR code using qrcode.js library
-                    var qrcode = new QRCode(document.getElementById("qrcodeContainer"), {
-                        text: data.qrCode,
-                        width: 128,
-                        height: 128,
-                    });
-    
-                    // Show QR code container and download button
-                    document.getElementById("qrcodeContainer").style.display = 'block';
-                    document.getElementById("downloadButton").style.display = 'inline-block';
-                    document.getElementById("qrButton").style.display = 'none'; // Hide the QR button after generating QR code
-                },
-                error: function () {
-                    // Show error message
-                    alert('Error generating QR code.');
-                }
-            });
-        }
-    
+
         function downloadQRCode() {
-            // Get the data URL of the QR code image
             var dataUrl = document.getElementById("qrcodeContainer").querySelector('img').src;
-    
-            // Create a temporary link and trigger a download
+
             var a = document.createElement('a');
             a.href = dataUrl;
             a.download = 'qrcode.png';
@@ -202,8 +160,7 @@
             a.click();
             document.body.removeChild(a);
         }
-    
-        // Prevent the default form submission behavior
+
         $(document).ready(function () {
             $('#qrForm').submit(function (e) {
                 e.preventDefault();
