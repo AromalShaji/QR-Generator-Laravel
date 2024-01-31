@@ -20,7 +20,7 @@ class QrController extends Controller
             $prn = $request->input('prn');
 
             if (Student_table::where('prn', $prn)->exists()) {
-                $student_details = Student_table::where('prn', $prn)->get();
+                $student_details = Student_table::with('college')->where('prn', $prn)->get();
                 return response()->json($student_details);
             } else {
                 return response()->json(['error' => 'No data found']);
@@ -30,5 +30,4 @@ class QrController extends Controller
             return response()->json(['error' => 'Internal Server Error'], 500);
         }
     }
-
 }
