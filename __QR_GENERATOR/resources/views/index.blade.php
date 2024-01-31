@@ -121,7 +121,7 @@
 
                     if (data.length > 0) {
                         studentName.value = data[0].student_name;
-                        collegeName.value = data[0].college_name;
+                        collegeName.value = data[0].college_id;
                         falseNumber.value = data[0].false_number;
                         courseId.value = data[0].course_id;
 
