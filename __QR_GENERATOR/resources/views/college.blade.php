@@ -63,7 +63,7 @@
     
     <div class="table-container">
         <div id="container">
-            <form id="qrForm" action="{{ route('generateQrCode') }}" method="POST">
+            <form id="qrForm" action="{{ route('generateQrCodeDetails') }}" method="POST">
                 @csrf
                 <div class="button-container">
                     <label id="prnLabel" for="prnField">College Name :</label>
@@ -119,7 +119,7 @@
     
             // Use AJAX to fetch data from the controller
             $.ajax({
-                url: '{{ route("generateQrCode") }}',
+                url: '{{ route("generateQrCodeDetails") }}',
                 type: 'POST',
                 data: { prn: prnField.value, _token: '{{ csrf_token() }}' },
                 success: function (data) {
