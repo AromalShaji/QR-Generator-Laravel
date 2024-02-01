@@ -9,3 +9,4 @@ use App\Http\Controllers\QrController;
 Route::any('/', [BaseController::class, 'index'])->name('index');
 Route::any('/college', [BaseController::class, 'college'])->name('college');
 Route::any('/generateQrCodeDetails', [QrController::class, 'generateQrCodeDetails'])->name('generateQrCodeDetails');
+Route::any('/generateQrCodeCollege', [QrController::class, 'generateQrCodeCollege'])->name('generateQrCodeCollege');

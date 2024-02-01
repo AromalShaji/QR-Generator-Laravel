@@ -27,7 +27,7 @@
             </ul>
 
             <div class="d-flex align-items-center">
-                    <a data-mdb-ripple-init class="btn btn-primary me-3" href="\logout" role="button">
+                    <a data-mdb-ripple-init class="btn btn-primary me-3" href="/" role="button">
                         QR Generator
                     </a>
             </div>

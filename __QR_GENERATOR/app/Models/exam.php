@@ -9,7 +9,7 @@ class exam extends Model
 {
     use HasFactory;
     protected $table = 'exams';
-    protected $fillable = ['exam_name', 'course_name'];
+    protected $fillable = ['exam_name', 'subject_name'];
     public function students(){
         return $this->hasMany(Student::class, 'exam_id');
     }

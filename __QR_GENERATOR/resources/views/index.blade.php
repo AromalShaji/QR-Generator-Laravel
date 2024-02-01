@@ -76,7 +76,7 @@
                     <button class="btn btn-success me-3" type="button" id="submitButton" onclick="showQRButton()">Submit</button>
                 </div>
                 <br>
-                <div id="additionalFields" style="display: none;">
+                <!--<div id="additionalFields" style="display: none;">
                     <label for="studentName">Student Name:</label>
                     <input type="text" id="studentName" class="editable" readonly>
                     <br>
@@ -89,8 +89,7 @@
                     <label for="falseNumber">False Number:</label>
                     <input type="text" id="falseNumber" class="editable" readonly>
                     <br>
-                </div>
-    
+                </div>-->
                 <button class="btn btn-success me-3" id="downloadButton" style="display: none;" onclick="downloadQRCode()">Generate PDF</button>
             </form>
             <div id="loadingMessage" style="display: none;">Loading...</div>
@@ -101,73 +100,74 @@
     
     <script>
         function showQRButton() {
-    var prnField = document.getElementById("prnField");
-    var studentName = document.getElementById("studentName");
-    var collegeName = document.getElementById("collegeName");
-    var falseNumber = document.getElementById("falseNumber");
-    var courseId = document.getElementById("courseId");
+            var prnField = document.getElementById("prnField");
+            // var studentName = document.getElementById("studentName");
+            // var collegeName = document.getElementById("collegeName");
+            // var falseNumber = document.getElementById("falseNumber");
+            // var courseId = document.getElementById("courseId");
 
-    // Clear existing data and messages
-    document.getElementById("qrcodeContainer").innerHTML = '';
-    document.getElementById("loadingMessage").style.display = 'none';
-    document.getElementById("errorMessage").style.display = 'none';
-    document.getElementById("downloadButton").style.display = 'none';
+            document.getElementById("qrcodeContainer").innerHTML = '';
+            document.getElementById("loadingMessage").style.display = 'none';
+            document.getElementById("errorMessage").style.display = 'none';
+            document.getElementById("downloadButton").style.display = 'none';
 
-    if (prnField.value.trim() === '') {
-        alert('Please fill in PRN field.');
-        return;
-    }
-
-    prnField.removeAttribute('readonly');
-
-    // Use AJAX to fetch data from the controller
-    $.ajax({
-        url: '{{ route("generateQrCodeDetails") }}',
-        type: 'POST',
-        data: { prn: prnField.value, _token: '{{ csrf_token() }}' },
-        success: function (data) {
-            if (data.length > 0) {
-                // Update the fields with the received data
-                studentName.value = data[0].student_name;
-                collegeName.value = data[0].college_id;
-                falseNumber.value = data[0].false_number;
-                courseId.value = data[0].course_id;
-
-                // Show additional fields and QR code button
-                document.getElementById("additionalFields").style.display = 'block';
-
-                // Generate QR code using qrcode.js library
-                var qrcode = new QRCode(document.getElementById("qrcodeContainer"), {
-                    text: data[0].false_number,
-                    width: 128,
-                    height: 128,
-                });
-
-                // Show QR code container and download button
-                document.getElementById("qrcodeContainer").style.display = 'block';
-                document.getElementById("downloadButton").style.display = 'inline-block';
-                document.getElementById("submitButton").style.display = 'inline-block';
-            } else {
-                // Show error message
-                document.getElementById("errorMessage").innerText = 'No data found.';
-                document.getElementById("errorMessage").style.display = 'block';
-
-                // Hide additional fields
-                document.getElementById("additionalFields").style.display = 'none';
+            if (prnField.value.trim() === '') {
+                alert('Please fill in PRN field.');
+                return;
             }
-        },
-        error: function () {
-            // Show error message
-            document.getElementById("errorMessage").innerText = 'Error fetching data from the server.';
-            document.getElementById("errorMessage").style.display = 'block';
 
-            // Hide additional fields
-            document.getElementById("additionalFields").style.display = 'none';
+            prnField.removeAttribute('readonly');
+
+            // Use AJAX to fetch data from the controller
+            $.ajax({
+                url: '{{ route("generateQrCodeDetails") }}',
+                type: 'POST',
+                data: { prn: prnField.value, _token: '{{ csrf_token() }}' },
+                success: function (data) {
+                    if (data && !data.error) {
+                        
+                        
+                        // studentName.value = data.student_name || 'undefined';
+                        // collegeName.value = data.college ? data.college.college_name : 'undefined';
+                        // falseNumber.value = data.false_number || 'undefined';
+                        // courseId.value = data.course_id || 'undefined';
+
+                        // document.getElementById("additionalFields").style.display = 'block';
+
+                        var additionalData = "Student Name: " + data.student_name + "\n" +
+                                            "College Name: " + (data.college ? data.college.college_name : 'undefined') + "\n" +
+                                            "False Number: " + data.false_number + "\n" +
+                                            "Course ID: " + data.course_id;
+
+                        var qrcode = new QRCode(document.getElementById("qrcodeContainer"), {
+                            text: additionalData,
+                            width: 128,
+                            height: 128,
+                        });
+
+                        document.getElementById("qrcodeContainer").style.display = 'block';
+                        document.getElementById("downloadButton").style.display = 'inline-block';
+                    } else {
+                        document.getElementById("errorMessage").innerText = data.error || 'No data found.';
+                        document.getElementById("errorMessage").style.display = 'block';
+
+                        // document.getElementById("additionalFields").style.display = 'none';
+                    }
+                },
+                error: function () {
+                    // Show error message
+                    document.getElementById("errorMessage").innerText = 'Error fetching data from the server.';
+                    document.getElementById("errorMessage").style.display = 'block';
+
+                    // Hide additional fields
+                    // document.getElementById("additionalFields").style.display = 'none';
+                }
+            });
         }
-    });
-}
+
 
     
+
         function downloadQRCode() {
             var dataUrl = document.getElementById("qrcodeContainer").querySelector('img').src;
     
