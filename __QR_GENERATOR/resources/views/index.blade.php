@@ -118,7 +118,6 @@
 
             prnField.removeAttribute('readonly');
 
-            // Use AJAX to fetch data from the controller
             $.ajax({
                 url: '{{ route("generateQrCodeDetails") }}',
                 type: 'POST',
@@ -147,6 +146,8 @@
 
                         document.getElementById("qrcodeContainer").style.display = 'block';
                         document.getElementById("downloadButton").style.display = 'inline-block';
+                        document.getElementById("qrcodeContainer").querySelector('img').title = '';
+
                     } else {
                         document.getElementById("errorMessage").innerText = data.error || 'No data found.';
                         document.getElementById("errorMessage").style.display = 'block';
@@ -155,18 +156,13 @@
                     }
                 },
                 error: function () {
-                    // Show error message
                     document.getElementById("errorMessage").innerText = 'Error fetching data from the server.';
                     document.getElementById("errorMessage").style.display = 'block';
 
-                    // Hide additional fields
                     // document.getElementById("additionalFields").style.display = 'none';
                 }
             });
         }
-
-
-    
 
         function downloadQRCode() {
             var dataUrl = document.getElementById("qrcodeContainer").querySelector('img').src;
@@ -187,6 +183,12 @@
     </script>
     
     <style>
+        #qrcodeContainer img {
+            -webkit-user-select: none; 
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
         .table-container {
             background-color: white;
             border-radius: 20px;

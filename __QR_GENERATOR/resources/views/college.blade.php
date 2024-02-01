@@ -61,9 +61,9 @@
                         <td><input type="text" value="{{ $details['student_prn'] }}" readonly class="editable"></td>
                         <td> 
                             {!! DNS2D::getBarcodeHTML(
-                                $details['false_number'] . '|' . 
-                                $details['student_college'] . '|' . 
-                                $details['student_course'] . '|' . 
+                                $details['false_number'] . '  |' . 
+                                $details['student_college'] . ' | ' . 
+                                $details['student_course'] . ' | ' . 
                                 $details['student_exam']
                                 , 'QRCODE', 2, 2) !!}
                         </td>

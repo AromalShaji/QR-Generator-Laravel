@@ -39,7 +39,7 @@ class QrController extends Controller
         $collegeDetails = College::where('college_name', $collegeName)->first();
         $details = [];
 
-        if ($collegeDetails) {
+        if (isset($collegeDetails)) {
             $studentDetails = Student_table::with('college')->where('college_id', $collegeDetails->id)->get();
 
             if ($studentDetails->isNotEmpty()) {
@@ -58,14 +58,15 @@ class QrController extends Controller
                         // "qrcode" => $this->createQRImage($student['false_number'])
                     ];
                 }
-
                 return redirect(route('college'))
                     ->with('studentDetails', $studentDetails)
                     ->with('details', $details);
+            }else{
+                return redirect(route('college'))->with('error', 'No Data Available!');
             }
         }
 
-        return redirect(route('college'))->with('error', 'error');
+        return redirect(route('college'))->with('error', 'Error');
     }
 
     
