@@ -87,10 +87,11 @@
     <script>
         function showQRButton() {
             var prnField = document.getElementById("prnField");
+
             document.getElementById("qrcodeContainer").innerHTML = '';
-            document.getElementById("loadingMessage").style.display = 'none';
             document.getElementById("errorMessage").style.display = 'none';
             document.getElementById("downloadButton").style.display = 'none';
+            document.getElementById("loadingMessage").style.display = 'block';
 
             if (prnField.value.trim() === '') {
                 alert('Please fill in PRN field.');
@@ -105,6 +106,7 @@
                 data: { prn: prnField.value, _token: '{{ csrf_token() }}' },
                 success: function (data) {
                     if (data && !data.error) {
+                        document.getElementById("loadingMessage").style.display = 'none';
                         var additionalData = "Student Name: " + data.student_name + "\n" +
                                             "College Name: " + (data.college ? data.college.college_name : 'undefined') + "\n" +
                                             "False Number: " + data.false_number + "\n" +
@@ -118,20 +120,25 @@
 
                         document.getElementById("qrcodeContainer").style.display = 'block';
                         document.getElementById("downloadButton").style.display = 'inline-block';
-                        document.getElementById("qrcodeContainer").querySelector('img').title = '';
 
+                        document.getElementById("qrcodeContainer").querySelector('img').removeAttribute('title');
                     } else {
-                        document.getElementById("errorMessage").innerText = data.error || 'No data found.';
+                        document.getElementById("loadingMessage").style.display = 'none';
+                        document.getElementById("errorMessage").innerText = 'No data found.';
                         document.getElementById("errorMessage").style.display = 'block';
                     }
                 },
                 error: function () {
+                    document.getElementById("loadingMessage").style.display = 'none';
                     document.getElementById("errorMessage").innerText = 'Error fetching data from the server.';
                     document.getElementById("errorMessage").style.display = 'block';
 
+                    document.getElementById("additionalFields").style.display = 'none';
                 }
             });
         }
+
+
 
         function downloadQRCode() {
             var dataUrl = document.getElementById("qrcodeContainer").querySelector('img').src;

@@ -21,7 +21,7 @@ class QrController extends Controller
     
             $studentDetails = Student_table::with('college')->where('prn', $prn)->first();
     
-            if ($studentDetails) {
+            if (isset($studentDetails)) {
                 return response()->json($studentDetails);
             } else {
                 return response()->json(['error' => 'No data found'], 404);
