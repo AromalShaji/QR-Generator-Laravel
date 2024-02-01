@@ -77,7 +77,6 @@
 
     <script>
         function exportToPDF() {
-            
             var element = document.getElementById('detailsTable');
             html2pdf(element);
         }

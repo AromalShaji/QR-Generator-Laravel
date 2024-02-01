@@ -76,20 +76,6 @@
                     <button class="btn btn-success me-3" type="button" id="submitButton" onclick="showQRButton()">Submit</button>
                 </div>
                 <br>
-                <!--<div id="additionalFields" style="display: none;">
-                    <label for="studentName">Student Name:</label>
-                    <input type="text" id="studentName" class="editable" readonly>
-                    <br>
-                    <label for="collegeName">College Name:</label>
-                    <input type="text" id="collegeName" class="editable" readonly>
-                    <br>
-                    <label for="courseId">Course Name:</label>
-                    <input type="text" id="courseId" class="editable" readonly>
-                    <br>
-                    <label for="falseNumber">False Number:</label>
-                    <input type="text" id="falseNumber" class="editable" readonly>
-                    <br>
-                </div>-->
                 <button class="btn btn-success me-3" id="downloadButton" style="display: none;" onclick="downloadQRCode()">Generate PDF</button>
             </form>
             <div id="loadingMessage" style="display: none;">Loading...</div>
@@ -101,11 +87,6 @@
     <script>
         function showQRButton() {
             var prnField = document.getElementById("prnField");
-            // var studentName = document.getElementById("studentName");
-            // var collegeName = document.getElementById("collegeName");
-            // var falseNumber = document.getElementById("falseNumber");
-            // var courseId = document.getElementById("courseId");
-
             document.getElementById("qrcodeContainer").innerHTML = '';
             document.getElementById("loadingMessage").style.display = 'none';
             document.getElementById("errorMessage").style.display = 'none';
@@ -124,15 +105,6 @@
                 data: { prn: prnField.value, _token: '{{ csrf_token() }}' },
                 success: function (data) {
                     if (data && !data.error) {
-                        
-                        
-                        // studentName.value = data.student_name || 'undefined';
-                        // collegeName.value = data.college ? data.college.college_name : 'undefined';
-                        // falseNumber.value = data.false_number || 'undefined';
-                        // courseId.value = data.course_id || 'undefined';
-
-                        // document.getElementById("additionalFields").style.display = 'block';
-
                         var additionalData = "Student Name: " + data.student_name + "\n" +
                                             "College Name: " + (data.college ? data.college.college_name : 'undefined') + "\n" +
                                             "False Number: " + data.false_number + "\n" +
@@ -151,15 +123,12 @@
                     } else {
                         document.getElementById("errorMessage").innerText = data.error || 'No data found.';
                         document.getElementById("errorMessage").style.display = 'block';
-
-                        // document.getElementById("additionalFields").style.display = 'none';
                     }
                 },
                 error: function () {
                     document.getElementById("errorMessage").innerText = 'Error fetching data from the server.';
                     document.getElementById("errorMessage").style.display = 'block';
 
-                    // document.getElementById("additionalFields").style.display = 'none';
                 }
             });
         }
