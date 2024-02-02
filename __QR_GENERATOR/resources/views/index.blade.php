@@ -118,10 +118,9 @@
                             height: 128,
                         });
 
+                        document.getElementById("qrcodeContainer").querySelector('img').removeAttribute('title');
                         document.getElementById("qrcodeContainer").style.display = 'block';
                         document.getElementById("downloadButton").style.display = 'inline-block';
-
-                        document.getElementById("qrcodeContainer").querySelector('img').removeAttribute('title');
                     } else {
                         document.getElementById("loadingMessage").style.display = 'none';
                         document.getElementById("errorMessage").innerText = 'No data found.';

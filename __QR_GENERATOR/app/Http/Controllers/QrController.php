@@ -24,7 +24,8 @@ class QrController extends Controller
             if (isset($studentDetails)) {
                 return response()->json($studentDetails);
             } else {
-                return response()->json(['error' => 'No data found'], 404);
+                $error='No data found';
+                return response()->json($error, 404);
             }
         } catch (\Exception $e) {
             \Log::error('Exception in generateQrCodeDetails: ' . $e->getMessage());
